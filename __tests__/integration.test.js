@@ -25,10 +25,32 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        expect(body.topics.length).toBe(3);
+        expect(body.topics.length).toBe(3); 
         body.topics.forEach((topic) => {
           expect(typeof topic.slug).toBe("string");
           expect(typeof topic.description).toBe("string");
+        });
+      });
+  });
+});
+
+describe("GET /api", () => {
+  test("responds with a 200 status code", () => {
+    return request(app).get("/api").expect(200);
+  });
+  test("should return a JSON object with description, queries, and exampleResponse", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({body}) => {
+        expect(body).toMatchObject({
+          "GET /api/topics": {
+            description: "serves an array of objects of all topics",
+            queries: [],
+            exampleResponse: {
+              topics: [{ slug: "football", description: "Footie!" }],
+            },
+          },
         });
       });
   });
