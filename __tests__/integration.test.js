@@ -10,6 +10,7 @@ const {
 } = require("../db/data/test-data/index.js");
 const app = require("../db/app");
 
+
 beforeEach(() => {
   return seed({ articleData, commentData, topicData, userData });
 });
@@ -55,3 +56,27 @@ describe("GET /api", () => {
       });
   });
 });
+
+describe.only("GET /api/articles/:article_id", () => {
+  test("responds with a 200 status code", () => {
+    return request(app).get("/api/articles/1").expect(200);
+  })
+  test("responds with an article object, with all of the correct properties", () => {
+    return request(app)
+    .get("/api/articles/1")
+    .expect(200)
+    .then(({body}) => {
+      console.log(body.article)
+        body.article.forEach((property) => {
+          expect(typeof property.article_id).toBe("number");
+          expect(typeof property.title).toBe("string");
+          expect(typeof property.topic).toBe("string");
+          expect(typeof property.author).toBe("string");
+          expect(typeof property.body).toBe("string");
+          expect(typeof property.created_at).toBe("string");
+          expect(typeof property.votes).toBe("number");
+          expect(typeof property.article_img_url).toBe("string");          
+        })
+    })
+  })
+})
