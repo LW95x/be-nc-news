@@ -25,13 +25,11 @@ describe("GET /api/topics", () => {
       .get("/api/topics")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toMatchObject([
-          { slug: "mitch", description: "The man, the Mitch, the legend" },
-          { slug: "cats", description: "Not dogs" },
-          { slug: "paper", description: "what books are made of" },
-        ]);
+        expect(body.topics.length).toBe(3);
+        body.topics.forEach((topic) => {
+          expect(typeof topic.slug).toBe("string");
+          expect(typeof topic.description).toBe("string");
+        });
       });
   });
 });
-
-// I was ill from Wed-Fri last week, so I know my tests are properly inadequate. Looking for pointers on what else I could be testing for here, thanks in advance.
