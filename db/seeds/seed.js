@@ -116,4 +116,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
     });
 };
 
+
+
+
 module.exports = seed;
