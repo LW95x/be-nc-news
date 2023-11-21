@@ -3,7 +3,7 @@ const { getAllTopics } = require("./controllers/getTopics.controller");
 const { getApi } = require("./controllers/getApi.controller");
 const { getArticleById } = require("./controllers/getArticleById.controller");
 const { getArticles } = require("./controllers/getArticles.controller");
-
+const { getCommentsById } = require("./controllers/getCommentsById.controller");
 
 const app = express();
 
@@ -16,6 +16,8 @@ app.get("/api", getApi);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles", getArticles);
+
+app.get("/api/articles/:article_id/comments", getCommentsById);
 
 app.use((err, req, res, next) => {
   if (err.status) {

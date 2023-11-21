@@ -1,3 +1,4 @@
+
 const { findArticleById } = require("../models/getArticleById.model");
 
 exports.getArticleById = (req, res, next) => {

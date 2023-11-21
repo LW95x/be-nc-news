@@ -11,6 +11,7 @@ const {
 } = require("../db/data/test-data/index.js");
 const app = require("../db/app");
 const { expect } = require("@jest/globals");
+const { PROPERTY_TYPES } = require("@babel/types");
 
 beforeEach(() => {
   return seed({ articleData, commentData, topicData, userData });
@@ -94,7 +95,6 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        console.log(body.articles);
         expect(body.articles.length).toBe(13);
         expect(body.articles).toBeSorted({
           descending: true,
@@ -111,6 +111,45 @@ describe("GET /api/articles", () => {
           expect(typeof property.comment_count).toBe("string");
           expect(property.body).toBeUndefined();
         });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of comments with the correct article_id sorted in descending order", () => {
+    return request(app)
+      .get("/api/articles/9/comments")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.comments.length).toBe(2);
+        expect(body.comments).toBeSorted({
+          descending: true,
+          key: "created_at",
+        });
+        body.comments.forEach((property) => {
+          expect(typeof property.comment_id).toBe("number");
+          expect(typeof property.votes).toBe("number");
+          expect(typeof property.created_at).toBe("string");
+          expect(typeof property.author).toBe("string");
+          expect(typeof property.body).toBe("string");
+          expect(property.article_id).toBe(9);
+        });
+      });
+  });
+  test("GET 400: invalid article_id input", () => {
+    return request(app)
+      .get("/api/articles/not_an_id/comments")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+  test("GET 404: not found, article_id does not exist in table", () => {
+    return request(app)
+      .get("/api/articles/9999/comments")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("that ID does not exist");
       });
   });
 });
