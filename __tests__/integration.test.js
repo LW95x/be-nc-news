@@ -19,10 +19,7 @@ beforeEach(() => {
 afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
-  test("responds with a 200 status code", () => {
-    return request(app).get("/api/topics").expect(200);
-  });
-  test("returns an array of topic objects with 'slug' and 'description' properties", () => {
+  test("GET 200: returns an array of topic objects with 'slug' and 'description' properties", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -37,10 +34,7 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api", () => {
-  test("responds with a 200 status code", () => {
-    return request(app).get("/api").expect(200);
-  });
-  test("should return a JSON object with description, queries, and exampleResponse", () => {
+  test("GET 200: should return a JSON object with description, queries, and exampleResponse", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -59,9 +53,6 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("responds with a 200 status code", () => {
-    return request(app).get("/api/articles/1").expect(200);
-  });
   test("200: responds with an article object, with all of the correct properties", () => {
     return request(app)
       .get("/api/articles/1")
@@ -98,9 +89,6 @@ describe("GET /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("responds with a 200 status code", () => {
-    return request(app).get("/api/articles").expect(200);
-  });
   test("200: responds with an articles array of objects with the correct properties sorted in descending order with a comment_count", () => {
     return request(app)
       .get("/api/articles")
