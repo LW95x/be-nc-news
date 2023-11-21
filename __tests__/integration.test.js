@@ -10,8 +10,6 @@ const {
   userData,
 } = require("../db/data/test-data/index.js");
 const app = require("../db/app");
-const { expect } = require("@jest/globals");
-const { PROPERTY_TYPES } = require("@babel/types");
 
 beforeEach(() => {
   return seed({ articleData, commentData, topicData, userData });
@@ -118,10 +116,10 @@ describe("GET /api/articles", () => {
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: responds with an array of comments with the correct article_id sorted in descending order", () => {
     return request(app)
-      .get("/api/articles/9/comments")
+      .get("/api/articles/1/comments")
       .expect(200)
       .then(({ body }) => {
-        expect(body.comments.length).toBe(2);
+        expect(body.comments.length).toBe(11);
         expect(body.comments).toBeSorted({
           descending: true,
           key: "created_at",
@@ -132,7 +130,7 @@ describe("GET /api/articles/:article_id/comments", () => {
           expect(typeof property.created_at).toBe("string");
           expect(typeof property.author).toBe("string");
           expect(typeof property.body).toBe("string");
-          expect(property.article_id).toBe(9);
+          expect(property.article_id).toBe(1);
         });
       });
   });
