@@ -2,6 +2,7 @@ const express = require("express");
 const request = require("supertest");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
+require("jest-sorted");
 const {
   articleData,
   commentData,
@@ -9,6 +10,7 @@ const {
   userData,
 } = require("../db/data/test-data/index.js");
 const app = require("../db/app");
+const { expect } = require("@jest/globals");
 
 beforeEach(() => {
   return seed({ articleData, commentData, topicData, userData });
@@ -17,10 +19,7 @@ beforeEach(() => {
 afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
-  test("responds with a 200 status code", () => {
-    return request(app).get("/api/topics").expect(200);
-  });
-  test("returns an array of topic objects with 'slug' and 'description' properties", () => {
+  test("GET 200: returns an array of topic objects with 'slug' and 'description' properties", () => {
     return request(app)
       .get("/api/topics")
       .expect(200)
@@ -35,10 +34,7 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api", () => {
-  test("responds with a 200 status code", () => {
-    return request(app).get("/api").expect(200);
-  });
-  test("should return a JSON object with description, queries, and exampleResponse", () => {
+  test("GET 200: should return a JSON object with description, queries, and exampleResponse", () => {
     return request(app)
       .get("/api")
       .expect(200)
@@ -57,9 +53,6 @@ describe("GET /api", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("responds with a 200 status code", () => {
-    return request(app).get("/api/articles/1").expect(200);
-  });
   test("200: responds with an article object, with all of the correct properties", () => {
     return request(app)
       .get("/api/articles/1")
@@ -91,6 +84,33 @@ describe("GET /api/articles/:article_id", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("that ID does not exist");
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("200: responds with an articles array of objects with the correct properties sorted in descending order with a comment_count", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        console.log(body.articles);
+        expect(body.articles.length).toBe(13);
+        expect(body.articles).toBeSorted({
+          descending: true,
+          key: "created_at",
+        });
+        body.articles.forEach((property) => {
+          expect(typeof property.article_id).toBe("number");
+          expect(typeof property.title).toBe("string");
+          expect(typeof property.topic).toBe("string");
+          expect(typeof property.author).toBe("string");
+          expect(typeof property.created_at).toBe("string");
+          expect(typeof property.votes).toBe("number");
+          expect(typeof property.article_img_url).toBe("string");
+          expect(typeof property.comment_count).toBe("string");
+          expect(property.body).toBeUndefined();
+        });
       });
   });
 });
