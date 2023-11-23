@@ -151,3 +151,51 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST 201: should add a comment to an existing article", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "this is a test comment",
+    };
+
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.author).toBe("butter_bridge");
+        expect(response.body.body).toBe("this is a test comment");
+        expect(response.body.article_id).toBe(1);
+        expect(response.body.votes).toBe(0);
+      });
+  });
+  test("POST 400: invalid article_id input", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "this is a test comment",
+    };
+
+    return request(app)
+      .post("/api/articles/not_an_id/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+  test("POST 404: not found, article_id does not exist in the table", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "this is a test comment",
+    };
+
+    return request(app)
+    .post("/api/articles/9999/comments")
+    .send(newComment)
+    .expect(404)
+    .then((response) => {
+      expect(response.body.msg).toBe("that ID does not exist");
+    });
+  })
+});
