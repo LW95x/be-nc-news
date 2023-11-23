@@ -10,6 +10,7 @@ exports.findArticleById = (id) => {
                 msg: 'that ID does not exist'
             })
         }
+        
         return rows;
     })
 }

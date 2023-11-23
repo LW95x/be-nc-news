@@ -198,4 +198,35 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(response.body.msg).toBe("that ID does not exist");
     });
   })
+  test("POST 404: username does not exist", () => {
+    const newComment = {
+      username: "liam",
+      body: "this is a test comment",
+    };
+
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(400)
+    .then( (response) => {
+      expect(response.body.msg).toBe("Bad request");
+    })
+  })
+  test("POST 201: should only post with the correct properties when foreign properties are added", () => {
+    const newComment = {
+      username: "butter_bridge",
+      body: "this is a test comment",
+      extra_property: "banana"
+    };
+
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(201)
+    .then( (response) => {
+      expect(response.body.author).toBe("butter_bridge");
+      expect(response.body.body).toBe("this is a test comment");
+      expect(response.body.extra_property).toBeUndefined();
+    })
+  })
 });

@@ -5,6 +5,7 @@ const { getArticleById } = require("./controllers/getArticleById.controller");
 const { getArticles } = require("./controllers/getArticles.controller");
 const { getCommentsById } = require("./controllers/getCommentsById.controller");
 const { postCommentById } = require("./controllers/postCommentById.controller");
+const { handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./errors");
 
 const app = express();
 
@@ -22,25 +23,10 @@ app.get("/api/articles/:article_id/comments", getCommentsById);
 
 app.post("/api/articles/:article_id/comments", postCommentById)
 
-app.use((err, req, res, next) => {
-  if (err.status) {
-    res.status(err.status).send({ msg: err.msg });
-  } else {
-    next(err);
-  }
-});
+app.use(handleCustomErrors);
 
-app.use((err, req, res, next) => {
-  if (err.code === "22P02") {
-    res.status(400).send({ msg: "Bad request" });
-  } else {
-    next(err);
-  }
-});
+app.use(handlePsqlErrors);
 
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).send({ msg: "Internal Server Error" });
-});
+app.use(handleServerErrors)
 
 module.exports = app;
