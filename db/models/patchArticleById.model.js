@@ -5,14 +5,7 @@ exports.editArticleById = (newVotes, id) => {
     if (!article) {
       return Promise.reject({
         status: 404,
-        msg: "that ID does not exist",
-      });
-    }
-
-    if (typeof newVotes !== "number") {
-      return Promise.reject({
-        status: 400,
-        msg: "Bad request",
+        msg: "that article ID does not exist",
       });
     }
 

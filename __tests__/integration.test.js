@@ -276,7 +276,7 @@ describe("PATCH /api/articles/:article_id", () => {
       .send({ inc_votes: 5 })
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe("that ID does not exist");
+        expect(response.body.msg).toBe("that article ID does not exist");
       });
   });
   test("PATCH 400: invalid article_id input", () => {
