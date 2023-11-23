@@ -191,13 +191,13 @@ describe("POST /api/articles/:article_id/comments", () => {
     };
 
     return request(app)
-    .post("/api/articles/9999/comments")
-    .send(newComment)
-    .expect(404)
-    .then((response) => {
-      expect(response.body.msg).toBe("that ID does not exist");
-    });
-  })
+      .post("/api/articles/9999/comments")
+      .send(newComment)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("that ID does not exist");
+      });
+  });
   test("POST 400: username does not exist", () => {
     const newComment = {
       username: "liam",
@@ -205,38 +205,87 @@ describe("POST /api/articles/:article_id/comments", () => {
     };
 
     return request(app)
-    .post("/api/articles/1/comments")
-    .send(newComment)
-    .expect(400)
-    .then( (response) => {
-      expect(response.body.msg).toBe("Bad request");
-    })
-  })
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
   test("POST 201: should only post with the correct properties when foreign properties are added", () => {
     const newComment = {
       username: "butter_bridge",
       body: "this is a test comment",
-      extra_property: "banana"
+      extra_property: "banana",
     };
 
     return request(app)
-    .post("/api/articles/1/comments")
-    .send(newComment)
-    .expect(201)
-    .then( (response) => {
-      expect(response.body.author).toBe("butter_bridge");
-      expect(response.body.body).toBe("this is a test comment");
-      expect(response.body.extra_property).toBeUndefined();
-    })
-  })
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then((response) => {
+        expect(response.body.author).toBe("butter_bridge");
+        expect(response.body.body).toBe("this is a test comment");
+        expect(response.body.extra_property).toBeUndefined();
+      });
+  });
   test("POST 400: Incomplete request body", () => {
     return request(app)
-    .post("/api/articles/1/comments")
-    .send({username: "butter_bridge"})
-    .expect(400)
-    .then( (response) => {
-      console.log(response)
-      expect(response.body.msg).toBe("Bad request")
-    })
-  })
+      .post("/api/articles/1/comments")
+      .send({ username: "butter_bridge" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("PATCH 200: should update vote quantity when object is passed in", () => {
+    return request(app)
+      .patch("/api/articles/1/")
+      .send({ inc_votes: 5 })
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article_id).toBe(1);
+        expect(response.body.votes).toBe(105);
+      });
+  });
+  test("PATCH 200: should update vote quantity with negative votes by decrementing", () => {
+    return request(app)
+      .patch("/api/articles/1/")
+      .send({ inc_votes: -5 })
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article_id).toBe(1);
+        expect(response.body.votes).toBe(95);
+      });
+  });
+  test("PATCH 400: invalid patch object input", () => {
+    return request(app)
+      .patch("/api/articles/1/")
+      .send({ fake_votes: "not a number" })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+  test("PATCH 404: not found, article_id does not exist in table", () => {
+    return request(app)
+      .patch("/api/articles/9999")
+      .send({ inc_votes: 5 })
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("that article ID does not exist");
+      });
+  });
+  test("PATCH 400: invalid article_id input", () => {
+    return request(app)
+      .patch("/api/articles/not_an_id")
+      .send({ inc_votes: 5 })
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
 });

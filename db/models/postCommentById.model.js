@@ -9,11 +9,14 @@ exports.sendCommentById = (newComment, id) => {
       });
     }
 
-    if (!newComment.hasOwnProperty("username") || !newComment.hasOwnProperty("body")) {
+    if (
+      !newComment.hasOwnProperty("username") ||
+      !newComment.hasOwnProperty("body")
+    ) {
       return Promise.reject({
         status: 400,
-        msg: "Bad request"
-      })
+        msg: "Bad request",
+      });
     }
 
     const { username, body } = newComment;
