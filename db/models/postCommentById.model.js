@@ -9,8 +9,14 @@ exports.sendCommentById = (newComment, id) => {
       });
     }
 
-    const { username, body } = newComment;
+    if (!newComment.hasOwnProperty("username") || !newComment.hasOwnProperty("body")) {
+      return Promise.reject({
+        status: 400,
+        msg: "Bad request"
+      })
+    }
 
+    const { username, body } = newComment;
     return db
       .query(
         `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,

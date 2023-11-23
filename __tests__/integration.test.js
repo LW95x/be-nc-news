@@ -229,4 +229,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(response.body.extra_property).toBeUndefined();
     })
   })
+  test("POST 400: Incomplete request body", () => {
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send({username: "butter_bridge"})
+    .expect(400)
+    .then( (response) => {
+      console.log(response)
+      expect(response.body.msg).toBe("Bad request")
+    })
+  })
 });
