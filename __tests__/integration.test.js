@@ -198,7 +198,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(response.body.msg).toBe("that ID does not exist");
     });
   })
-  test("POST 404: username does not exist", () => {
+  test("POST 400: username does not exist", () => {
     const newComment = {
       username: "liam",
       body: "this is a test comment",
