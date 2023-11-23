@@ -235,7 +235,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send({ username: "butter_bridge" })
       .expect(400)
       .then((response) => {
-        console.log(response);
         expect(response.body.msg).toBe("Bad request");
       });
   });
