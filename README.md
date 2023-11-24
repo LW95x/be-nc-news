@@ -14,8 +14,7 @@ Installing dependencies - see 'package.json' for list of dev dependencies not in
 
 Seeding - Not sure what to put here?
 
-To run tests - 'npm run test-integration'
-
+To run tests - 'npm run test-integration'.
 
 Instructions to run
 
