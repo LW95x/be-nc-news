@@ -5,15 +5,26 @@ const { getArticleById } = require("./controllers/getArticleById.controller");
 const { getArticles } = require("./controllers/getArticles.controller");
 const { getCommentsById } = require("./controllers/getCommentsById.controller");
 const { postCommentById } = require("./controllers/postCommentById.controller");
-const { handleCustomErrors, handlePsqlErrors, handleServerErrors } = require("./errors");
-const { patchArticleById } = require("./controllers/patchArticleById.controller");
-const { deleteCommentById } = require("./controllers/deleteCommentById.controller");
+const {
+  handleCustomErrors,
+  handlePsqlErrors,
+  handleServerErrors,
+} = require("./errors");
+const {
+  patchArticleById,
+} = require("./controllers/patchArticleById.controller");
+const {
+  deleteCommentById,
+} = require("./controllers/deleteCommentById.controller");
+const { getUsers } = require("./controllers/getUsers.controller");
 
 const app = express();
 
 app.use(express.json());
 
 app.get("/api/topics", getAllTopics);
+
+app.get("/api/users", getUsers);
 
 app.get("/api", getApi);
 
@@ -33,6 +44,6 @@ app.use(handleCustomErrors);
 
 app.use(handlePsqlErrors);
 
-app.use(handleServerErrors)
+app.use(handleServerErrors);
 
 module.exports = app;
