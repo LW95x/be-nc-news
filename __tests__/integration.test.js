@@ -289,3 +289,34 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("DELETE 204: should remove comments by comment_id", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(() => {
+        return db.query(`SELECT * FROM comments`).then(({ rows }) => {
+          rows.forEach((comment) => {
+            expect(comment.comment_id).not.toBe(1);
+          });
+        });
+      });
+  });
+  test("DELETE 400: invalid comment_id input", () => {
+    return request(app)
+      .delete("/api/comments/not-an-id")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad request");
+      });
+  });
+  test("DELETE 404:not found, comment_id does not exist in the table", () => {
+    return request(app)
+      .delete("/api/comments/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("that comment ID does not exist");
+      });
+  });
+});
