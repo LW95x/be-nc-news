@@ -113,7 +113,7 @@ describe("GET /api/articles", () => {
   });
   test("200: if a topic query is passed in, should only return topics with that query", () => {
     return request(app)
-      .get("/api/articles?mitch")
+      .get("/api/articles?topic=mitch")
       .expect(200)
       .then(({ body }) => {
         expect(body.articles.length).toBe(12);
@@ -132,10 +132,18 @@ describe("GET /api/articles", () => {
   });
   test("404: topic does not exist", () => {
     return request(app)
-      .get("/api/articles?liam")
+      .get("/api/articles?topic=liam")
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe("That topic does not exist");
+      });
+  });
+  test("200: if passed in an existing topic with no articles, should return empty array", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.articles).toEqual([]);
       });
   });
 });

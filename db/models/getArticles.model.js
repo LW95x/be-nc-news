@@ -1,57 +1,43 @@
 const db = require("../connection");
 
 exports.findArticles = (topic) => {
+  let topicQuery = `SELECT 
+    a.article_id, 
+    a.title, 
+    a.topic, 
+    a.author, 
+    a.created_at, 
+    a.votes, 
+    a.article_img_url, 
+    COUNT(c.comment_id) AS comment_count 
+    FROM articles a
+    LEFT JOIN comments c ON a.article_id = c.article_id`;
+
+  let parameters = [];
+
   if (topic) {
-    return db
-      .query(
-        `SELECT 
-    a.article_id, 
-    a.title, 
-    a.topic, 
-    a.author, 
-    a.created_at, 
-    a.votes, 
-    a.article_img_url, 
-    COUNT(c.comment_id) AS comment_count 
-    FROM articles a
-    LEFT JOIN comments c ON a.article_id = c.article_id
-    WHERE a.topic = $1
-    GROUP BY a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url
-    ORDER BY a.created_at DESC`,
-        [topic]
-      )
-      .then(({ rows }) => {
-        const articles = rows[0];
-
-        if (!articles) {
-          return Promise.reject({
-            status: 404,
-            msg: "That topic does not exist",
-          });
-        }
-        return rows;
-      });
+    topicQuery += ` WHERE a.topic = $1`;
+    parameters.push(topic);
   }
 
-  if (!topic) {
-    return db
-      .query(
-        `SELECT 
-    a.article_id, 
-    a.title, 
-    a.topic, 
-    a.author, 
-    a.created_at, 
-    a.votes, 
-    a.article_img_url, 
-    COUNT(c.comment_id) AS comment_count 
-    FROM articles a
-    LEFT JOIN comments c ON a.article_id = c.article_id
-    GROUP BY a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url
-    ORDER BY a.created_at DESC`
-      )
-      .then(({ rows }) => {
-        return rows;
-      });
-  }
+  topicQuery += ` GROUP BY a.article_id, a.title, a.topic, a.author, a.created_at, a.votes, a.article_img_url
+    ORDER BY a.created_at DESC`;
+
+  return db.query(topicQuery, parameters).then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.checkTopicExists = (topic) => {
+  return db
+    .query(`SELECT * FROM topics WHERE slug = $1`, [topic])
+    .then(({ rows }) => {
+      if (!rows.length) {
+        return Promise.reject({
+          status: 404,
+          msg: "That topic does not exist",
+        });
+      }
+      return rows;
+    });
 };
