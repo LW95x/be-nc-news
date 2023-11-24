@@ -66,6 +66,7 @@ describe("GET /api/articles/:article_id", () => {
           expect(typeof property.created_at).toBe("string");
           expect(typeof property.votes).toBe("number");
           expect(typeof property.article_img_url).toBe("string");
+          expect(property.comment_count).toBe("11");
         });
       });
   });
