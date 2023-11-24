@@ -51,7 +51,7 @@ describe("GET /api", () => {
   });
 });
 
-describe("GET /api/articles/:article_id", () => {
+describe.only("GET /api/articles/:article_id", () => {
   test("200: responds with an article object, with all of the correct properties", () => {
     return request(app)
       .get("/api/articles/1")
@@ -66,6 +66,7 @@ describe("GET /api/articles/:article_id", () => {
           expect(typeof property.created_at).toBe("string");
           expect(typeof property.votes).toBe("number");
           expect(typeof property.article_img_url).toBe("string");
+          expect(property.comment_count).toBe("11");
         });
       });
   });
