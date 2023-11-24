@@ -111,6 +111,33 @@ describe("GET /api/articles", () => {
         });
       });
   });
+  test("200: if a topic query is passed in, should only return topics with that query", () => {
+    return request(app)
+      .get("/api/articles?mitch")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.articles.length).toBe(12);
+        body.articles.forEach((property) => {
+          expect(typeof property.article_id).toBe("number");
+          expect(typeof property.title).toBe("string");
+          expect(typeof property.author).toBe("string");
+          expect(typeof property.created_at).toBe("string");
+          expect(typeof property.votes).toBe("number");
+          expect(typeof property.article_img_url).toBe("string");
+          expect(typeof property.comment_count).toBe("string");
+          expect(property.topic).toBe("mitch");
+          expect(property.body).toBeUndefined();
+        });
+      });
+  });
+  test("404: topic does not exist", () => {
+    return request(app)
+      .get("/api/articles?liam")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("That topic does not exist");
+      });
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
@@ -311,7 +338,7 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(response.body.msg).toBe("Bad request");
       });
   });
-  test("DELETE 404:not found, comment_id does not exist in the table", () => {
+  test("DELETE 404: not found, comment_id does not exist in the table", () => {
     return request(app)
       .delete("/api/comments/9999")
       .expect(404)
