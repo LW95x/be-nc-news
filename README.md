@@ -1,28 +1,30 @@
 # Northcoders News API
 
-Hosted version: https://be-nc-news-sfsv.onrender.com 
+## Hosted version
 
-Description
+https://be-nc-news-sfsv.onrender.com/api 
+
+## Description
 
 - An API that has been designed to mimic the building of a real world backend service (such as Reddit), to provide information to front end architecture.
 
-Cloning/dependencies/seeding/testing
+## Cloning, Dependencies, Seeding, and Testing Instructions
 
-To clone - 'git clone https://github.com/LW95x/be-nc-news.git'
+- Cloning Instructions: ```git clone https://github.com/LW95x/be-nc-news.git```
 
-Installing dependencies - see 'package.json' for list of dev dependencies not included with cloning. You will also need to run 'npm install'.
+- Installing dependencies: You will need to run ```npm install```
 
-Seeding - Not sure what to put here?
+- Seeding Instructions: You will need to do ```npm run seed```
 
-To run tests - 'npm run test-integration'.
+- Testing Instructions: You will need to do ```npm run test-integration```
 
-Instructions to run
+## Environment Setup Instructions
 
-- You will need to create two .env files: .env.test and .env.development. 
+- You will need to create two .env files: ```.env.test``` and ```.env.development```
 
-- Into each, add PGDATABASE=, with the correct database name for that environment (see /db/setup.sql for the database names). Double check that these .env files are .gitignored.
+- Into each, add ```PGDATABASE=```, with the correct database name for that environment (see /db/setup.sql for the database names). Double check that these .env files are .gitignored.
 
-Minimum versions
+## Minimum versions
 
 - Node - v20.7.0
 - psql - v14.9
