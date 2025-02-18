@@ -9,7 +9,12 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
   throw new Error('PGDATABASE or DATABASE_URL not set');
 }
 
-const config = {};
+const config = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    ca: process.env.PGSSLCERT ? process.env.PGSSLCERT.replace(/\\n/g, '\n') : undefined,
+  },
+};
 
 if (ENV === 'production') {
   config.connectionString = process.env.DATABASE_URL;
