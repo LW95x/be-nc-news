@@ -12,7 +12,7 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 
 const config = {
   ssl: {
-    ca: fs.readFileSync(__dirname + '/../ca.pem').toString(),
+    rejectUnauthorized: false,
   },
 };
 
