@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { Pool } = require('pg');
 const ENV = process.env.NODE_ENV || 'development';
 
@@ -10,9 +11,8 @@ if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
 }
 
 const config = {
-  connectionString: process.env.DATABASE_URL,
   ssl: {
-    ca: process.env.PGSSLCERT ? process.env.PGSSLCERT.replace(/\\n/g, '\n') : undefined,
+    ca: fs.readFileSync(__dirname + '/../ca.pem').toString(),
   },
 };
 
